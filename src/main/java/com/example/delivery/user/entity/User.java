@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Entity
 @Getter
 @NoArgsConstructor
@@ -29,4 +31,10 @@ public class User {
         this.password = password;
         this.role = role;
     }
+
+    @Column(name = "created_at", nullable = false)
+    private Date createdAt;
+
+    @Column(name = "updated_at",nullable = false)
+    private Date updatedAt;
 }
