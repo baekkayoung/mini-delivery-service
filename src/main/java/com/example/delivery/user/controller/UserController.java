@@ -1,5 +1,7 @@
 package com.example.delivery.user.controller;
 
+import com.example.delivery.jwt.JwtUtil;
+import com.example.delivery.user.dto.request.LoginRequestDto;
 import com.example.delivery.user.dto.request.SignupRequestDto;
 import com.example.delivery.user.dto.response.SignupResponseDto;
 import com.example.delivery.user.service.UserService;
@@ -25,6 +27,12 @@ public class UserController {
     ) {
         SignupResponseDto response = userService.signUp(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping("/users/login")
+    public ResponseEntity<Void> login(@Valid @RequestBody LoginRequestDto request) {
+        String token = userService.login(request);
+        return ResponseEntity.ok().header(JwtUtil.AUTHORIZATION_HEADER, token).build();
     }
 
 
