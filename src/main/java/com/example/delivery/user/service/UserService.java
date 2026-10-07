@@ -9,6 +9,8 @@ import com.example.delivery.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
@@ -36,12 +38,18 @@ public class UserService {
     public String login(LoginRequestDto request) {
 
         User user = userRepository.findByUsername(request.getUsername())
-                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 아이디 입니다."));
+                .orElseThrow(()-> new ResponseStatusException(
+                        HttpStatus.UNAUTHORIZED,
+                        "존재하지 않는 아이디 입니다."
+                ));
 
         boolean matches = passwordEncoder.matches(request.getPassword(), user.getPassword());
 
         if(!matches){
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED,
+                    "비밀번호가 일치하지 않습니다."
+            );
         }
 
         return jwtUtil.createToken(user.getUsername(), user.getRole());
