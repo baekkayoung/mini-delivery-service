@@ -33,6 +33,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         // Authorization 헤더에서 JWT 가져오기
         String bearerToken = jwtUtil.getTokenFromRequest(request);
 
+        System.out.println("Authorization Header = " + bearerToken);
+
         // 토큰이 없으면 다음 필터로 넘김
         if (bearerToken == null) {
             filterChain.doFilter(request, response);
@@ -45,7 +47,15 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
             // JWT 검증
             if (!jwtUtil.validateToken(token)) {
-                filterChain.doFilter(request, response);
+                System.out.println("===== JWT 검증 실패 =====");
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json;charset=UTF-8");
+                response.getWriter().write("""
+            {
+                "status": 401,
+                "message": "유효하지 않은 토큰입니다."
+            }
+            """);
                 return;
             }
 
@@ -73,7 +83,16 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         } catch (Exception e) {
             // 토큰이 잘못된 경우 인증 정보를 넣지 않음
-            SecurityContextHolder.clearContext();
+//            SecurityContextHolder.clearContext();\
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json;charset=UTF-8");
+            response.getWriter().write("""
+            {
+                "status": 401,
+                "message": "유효하지 않은 토큰입니다."
+            }
+            """);
+            return;
         }
 
         // 다음 필터로 요청 전달
