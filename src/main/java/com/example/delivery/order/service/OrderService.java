@@ -3,11 +3,13 @@ package com.example.delivery.order.service;
 import com.example.delivery.menu.entity.Menu;
 import com.example.delivery.menu.repository.MenuRepository;
 import com.example.delivery.order.dto.request.OrderRequestDto;
+import com.example.delivery.order.dto.request.OrderStatusRequestDto;
 import com.example.delivery.order.dto.response.OrderResponseDto;
 import com.example.delivery.order.entity.Order;
 import com.example.delivery.order.repository.OrderRepository;
 import com.example.delivery.user.entity.User;
 import com.example.delivery.user.entity.UserRole;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -78,5 +80,27 @@ public class OrderService {
 
         // 주문 상태 취소로 변경
         order.cancel();
+    }
+
+    @Transactional
+    public void changeOrderStatus(Long id, OrderStatusRequestDto request, User user) {
+
+        // 주문 존재 확인
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "주문을 찾을 수 없습니다."
+                ));
+
+        // 본인 메뉴의 주문인지 확인
+        if (!order.getMenu().getUser().getId().equals(user.getId())) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "본인 메뉴의 주문만 변경할 수 있습니다."
+            );
+        }
+
+        // 허용된 상태 전이인지 Order에서 검사
+        order.changeStatus(request.getOrderStatus());
     }
 }
