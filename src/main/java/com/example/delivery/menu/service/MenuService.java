@@ -13,6 +13,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class MenuService {
@@ -43,4 +45,10 @@ public class MenuService {
 
         return new MenuResponseDto(menuRepository.save(menu));
     }
+
+    public List<MenuResponseDto> findAllByIsDeletedFalse() {
+
+        return menuRepository.findAllByIsDeletedFalse().stream().map(MenuResponseDto::new).toList();
+    }
+
 }
