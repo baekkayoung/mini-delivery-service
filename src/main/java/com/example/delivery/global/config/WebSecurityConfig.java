@@ -39,6 +39,7 @@ public class WebSecurityConfig {
 
                         .requestMatchers(HttpMethod.POST,"/api/orders").hasRole("CUSTOMER")
                         .requestMatchers(HttpMethod.DELETE,"/api/orders/**").hasRole("CUSTOMER")
+                        .requestMatchers(HttpMethod.POST, "/api/orders/*/payments").hasRole("CUSTOMER")
 
                         .anyRequest().permitAll()
                 )

@@ -100,4 +100,15 @@ public class Order {
                 "변경할 수 없는 주문 상태입니다."
         );
     }
+
+    public void payment() {
+
+        if (this.orderStatus != OrderStatus.REQUESTED) {
+            throw new IllegalStateException(
+                    "주문 요청 상태에서만 결제할 수 있습니다."
+            );
+        }
+
+        this.orderStatus = OrderStatus.PAID;
+    }
 }
