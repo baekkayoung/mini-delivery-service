@@ -1,11 +1,8 @@
 package com.example.delivery.order.entity;
 
 import com.example.delivery.menu.entity.Menu;
-import com.example.delivery.order.dto.request.OrderRequestDto;
-import com.example.delivery.order.dto.response.OrderResponseDto;
 import com.example.delivery.user.entity.User;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -80,5 +77,27 @@ public class Order {
             );
         }
         this.orderStatus = OrderStatus.CANCELLED;
+    }
+
+    // 상태 변경 규칙
+    public void changeStatus(OrderStatus newStatus) {
+
+        if (this.orderStatus == OrderStatus.PAID
+                && newStatus == OrderStatus.ACCEPTED) {
+
+            this.orderStatus = OrderStatus.ACCEPTED;
+            return;
+        }
+
+        if (this.orderStatus == OrderStatus.ACCEPTED
+                && newStatus == OrderStatus.DELIVERED) {
+
+            this.orderStatus = OrderStatus.DELIVERED;
+            return;
+        }
+
+        throw new IllegalStateException(
+                "변경할 수 없는 주문 상태입니다."
+        );
     }
 }
