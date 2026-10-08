@@ -1,24 +1,18 @@
 package com.example.delivery.menu.entity;
 
+import com.example.delivery.global.entity.BaseEntity;
 import com.example.delivery.user.entity.User;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.util.Date;
 
 @Getter
 @Entity
 @NoArgsConstructor
 @Table(name = "menu")
 @EntityListeners(AuditingEntityListener.class)
-public class Menu {
+public class Menu extends BaseEntity {
     @Id
     @Column(name = "menu_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,14 +33,6 @@ public class Menu {
 
     @Column(name="is_deleted", nullable = false)
     private Boolean isDeleted = false;
-
-    @CreatedDate
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private Date createdAt;
-
-    @LastModifiedDate
-    @Column(name = "updated_at", nullable = false)
-    private Date updatedAt;
 
 
     public Menu(

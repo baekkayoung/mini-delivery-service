@@ -1,12 +1,11 @@
 package com.example.delivery.order.entity;
 
+import com.example.delivery.global.entity.BaseEntity;
 import com.example.delivery.menu.entity.Menu;
 import com.example.delivery.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
@@ -18,7 +17,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Table(name = "orders")
 @EntityListeners(AuditingEntityListener.class)
-public class Order {
+public class Order extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,14 +43,6 @@ public class Order {
     @Column(name = "order_status")
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
-
-    @CreatedDate
-    @Column(name = "created_at", nullable = false)
-    private Date createdAt;
-
-    @LastModifiedDate
-    @Column(name = "updated_at",nullable = false)
-    private Date updatedAt;
 
 
     public Order(

@@ -1,11 +1,10 @@
 package com.example.delivery.payment.entity;
 
+import com.example.delivery.global.entity.BaseEntity;
 import com.example.delivery.order.entity.Order;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Date;
@@ -15,7 +14,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Table(name = "payment")
 @EntityListeners(AuditingEntityListener.class)
-public class Payment {
+public class Payment extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,13 +35,6 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
 
-    @CreatedDate
-    @Column(name = "created_at", nullable = false)
-    private Date createdAt;
-
-    @LastModifiedDate
-    @Column(name = "updated_at",nullable = false)
-    private Date updatedAt;
 
     public Payment(Order order, int sum, PaymentOption paymentOption) {
         this.order = order;
