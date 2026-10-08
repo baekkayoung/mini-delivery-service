@@ -7,10 +7,13 @@ import com.example.delivery.order.dto.response.OrderResponseDto;
 import com.example.delivery.order.entity.Order;
 import com.example.delivery.order.repository.OrderRepository;
 import com.example.delivery.user.entity.User;
+import com.example.delivery.user.entity.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
 
 
 @Service
@@ -43,5 +46,22 @@ public class OrderService {
         Order savedOrder = orderRepository.save(order);
 
         return new OrderResponseDto(savedOrder);
+    }
+
+    public List<OrderResponseDto> getOrders(User user) {
+
+        List<Order> orders;
+
+        if (user.getRole() == UserRole.CUSTOMER) {
+            orders = orderRepository.findAllByUserId(user.getId());
+
+        } else {
+            orders = orderRepository.findAllByMenuUserId(user.getId());
+        }
+
+        return orders.stream()
+                .map(OrderResponseDto::new)
+                .toList();
+
     }
 }
