@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
 
@@ -68,5 +70,15 @@ public class Order {
         this.deliveryAddress = deliveryAddress;
         this.totalPrice = totalPrice;
         this.orderStatus = OrderStatus.REQUESTED;
+    }
+
+    public void cancel() {
+        if (this.orderStatus != OrderStatus.REQUESTED) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "주문요청 상태에서만 취소할 수 있습니다."
+            );
+        }
+        this.orderStatus = OrderStatus.CANCELLED;
     }
 }

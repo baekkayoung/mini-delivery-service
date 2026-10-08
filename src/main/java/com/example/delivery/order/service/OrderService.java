@@ -11,6 +11,7 @@ import com.example.delivery.user.entity.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -63,5 +64,19 @@ public class OrderService {
                 .map(OrderResponseDto::new)
                 .toList();
 
+    }
+
+    @Transactional
+    public void cancelOrder(Long id, User user) {
+        // 주문 조회
+        Order order = orderRepository.findById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"주문을 찾을 수 없습니다."));
+
+        //  본인의 주문인지 확인
+        if(!order.getUser().getId().equals(user.getId())){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"본인의 주문만 취소할 수 있습니다.");
+        }
+
+        // 주문 상태 취소로 변경
+        order.cancel();
     }
 }

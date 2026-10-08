@@ -37,4 +37,11 @@ public class OrderController {
         return orderService.getOrders(userDetails.getUser());
     }
 
+
+    @DeleteMapping("/orders/{id}")
+    public void cancelOrder(@PathVariable Long id,
+                            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        orderService.cancelOrder(id,userDetails.getUser());
+    }
+
 }
