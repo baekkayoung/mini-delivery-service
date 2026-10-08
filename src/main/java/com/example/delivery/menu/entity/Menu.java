@@ -16,6 +16,7 @@ import java.util.Date;
 @Getter
 @Entity
 @NoArgsConstructor
+@Table(name = "menu")
 @EntityListeners(AuditingEntityListener.class)
 public class Menu {
     @Id
