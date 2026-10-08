@@ -44,4 +44,9 @@ public class MenuController {
         return menuService.updateMenu(id,request,userDetails.getUser());
 
     }
+
+    @DeleteMapping("/menus/{id}")
+    public void deleteMenu(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        menuService.deleteMenu(id, userDetails.getUser());
+    }
 }

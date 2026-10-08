@@ -82,4 +82,22 @@ public class MenuService {
         return new MenuResponseDto(menu);
 
     }
+
+    @Transactional
+    public void deleteMenu(Long id, User user) {
+
+        // 메뉴 여부 검증
+        Menu menu = menuRepository.findByIdAndIsDeletedFalse(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"메뉴를 찾을 수 없습니다."));
+
+        // 메뉴 소유 검증
+        if (!menu.getUser().getId().equals(user.getId())) {
+            System.out.println(" 메뉴소유검증");
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "본인의 메뉴만 삭제할 수 있습니다."
+            );
+        }
+
+        menu.delete();
+    }
 }
