@@ -51,4 +51,14 @@ public class MenuService {
         return menuRepository.findAllByIsDeletedFalse().stream().map(MenuResponseDto::new).toList();
     }
 
+    public MenuResponseDto getMenu(Long id) {
+
+        Menu menu = menuRepository.findByIdAndIsDeletedFalse(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "메뉴가 삭제되어 찾을 수 없습니다."
+                ));
+
+        return new MenuResponseDto(menu);
+    }
 }

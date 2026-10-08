@@ -29,4 +29,9 @@ public class MenuController {
     public List<MenuResponseDto> getAllMenus(){
         return menuService.findAllByIsDeletedFalse();
     }
+
+    @GetMapping("/menus/{id}")
+    public MenuResponseDto getMenu(@PathVariable Long id){
+        return menuService.getMenu(id);
+    }
 }
