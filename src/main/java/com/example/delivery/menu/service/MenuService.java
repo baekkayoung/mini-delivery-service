@@ -11,9 +11,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -56,9 +58,28 @@ public class MenuService {
         Menu menu = menuRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        "메뉴가 삭제되어 찾을 수 없습니다."
+                        "메뉴를 찾을 수 없습니다."
                 ));
 
         return new MenuResponseDto(menu);
+    }
+
+    @Transactional
+    public MenuResponseDto updateMenu(Long id, MenuRequestDto request, User user) {
+
+        Menu menu = menuRepository.findByIdAndIsDeletedFalse(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"메뉴를 찾을 수 없습니다."));
+
+        if(!menu.getUser().getId().equals(user.getId())){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"본인의 메뉴만 수정할 수 있습니다.");
+        }
+
+        menu.update(
+                request.getName(),
+                request.getPrice(),
+                request.getDescription()
+        );
+
+        return new MenuResponseDto(menu);
+
     }
 }

@@ -3,6 +3,7 @@ package com.example.delivery.global.config;
 import com.example.delivery.jwt.JwtAuthorizationFilter;
 import com.example.delivery.jwt.JwtUtil;
 import com.example.delivery.security.UserDetailsServiceImpl;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,9 +29,21 @@ public class WebSecurityConfig {
         return http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.GET, "/api/menus").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/menus/**").permitAll()
+
                         .requestMatchers(HttpMethod.POST, "/api/menus").hasRole("OWNER")
+                        .requestMatchers(HttpMethod.PUT, "/api/menus/**").hasRole("OWNER")
                         .anyRequest().permitAll()
                 )
+
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.setContentType("application/json;charset=UTF-8");
+                            response.getWriter().write(
+                                    "{\"status\":401,\"message\":\"JWT 토큰이 없습니다.\"}"
+                            );
+                        }))
                 .csrf(csrf -> csrf.disable())
                 .addFilterBefore(
                         jwtAuthorizationFilter(),
