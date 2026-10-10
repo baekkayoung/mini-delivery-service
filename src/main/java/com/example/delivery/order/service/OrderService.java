@@ -26,6 +26,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final MenuRepository menuRepository;
 
+    @Transactional
     public OrderResponseDto createOrder(OrderRequestDto requestDto, User user) {
 
         // 메뉴 검증
@@ -51,6 +52,7 @@ public class OrderService {
         return new OrderResponseDto(savedOrder);
     }
 
+    @Transactional(readOnly = true)
     public List<OrderResponseDto> getOrders(User user) {
 
         List<Order> orders;
